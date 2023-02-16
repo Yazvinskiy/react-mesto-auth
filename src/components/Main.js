@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from './Card';
 import { api } from '../utils/api';
 
@@ -8,16 +8,29 @@ function Main(props) {
   const [userAvatar, setUserAvatar] = useState('');
   const [cards, setCards] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
+  const getUserInfo = async () => {
+    try {
       const userInfo = await api.getUserData();
-      const cards = await api.getInitialCards();
-      setCards(cards);
       setUserName(userInfo.name);
       setUserDescription(userInfo.about);
       setUserAvatar(userInfo.avatar);
+    } catch (err) {
+      console.log(err);
     }
-    fetchData();
+  };
+
+  const getCards = async () => {
+    try {
+      const cards = await api.getInitialCards();
+      setCards(cards);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    getCards();
   }, []);
 
   const { onEditProfile, onAddPlace, onEditAvatar, onCardClick } = props;
