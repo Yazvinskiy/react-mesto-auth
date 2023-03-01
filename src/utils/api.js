@@ -13,7 +13,7 @@ export default class Api {
 
   async getInitialCards() {
     const res = await fetch(`${this._baseUrl}/cards`, {
-      method: "GET",
+      method: 'GET',
       headers: this._headers,
     });
 
@@ -22,7 +22,7 @@ export default class Api {
 
   async createCard(data) {
     const res = await fetch(`${this._baseUrl}/cards`, {
-      method: "POST",
+      method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
@@ -34,7 +34,7 @@ export default class Api {
 
   async deleteCard(id) {
     const res = await fetch(`${this._baseUrl}/cards/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: this._headers,
     });
     return this._getResponse(res);
@@ -42,7 +42,7 @@ export default class Api {
 
   async getUserData() {
     const res = await fetch(`${this._baseUrl}/users/me`, {
-      method: "GET",
+      method: 'GET',
       headers: this._headers,
     });
 
@@ -51,7 +51,7 @@ export default class Api {
 
   async setUserData(data) {
     const res = await fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
@@ -61,20 +61,18 @@ export default class Api {
     return this._getResponse(res);
   }
 
-  async editAvatar(avatarLink) {
+  async editAvatar(data) {
     const res = await fetch(`${this._baseUrl}/users/me/avatar`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: this._headers,
-      body: JSON.stringify({
-        avatar: avatarLink,
-      }),
+      body: JSON.stringify(data),
     });
     return this._getResponse(res);
   }
 
   async likeCard(id) {
     const res = await fetch(`${this._baseUrl}/cards/${id}/likes`, {
-      method: "PUT",
+      method: 'PUT',
       headers: this._headers,
     });
     return this._getResponse(res);
@@ -82,7 +80,7 @@ export default class Api {
 
   async dislikeCard(id) {
     const res = await fetch(`${this._baseUrl}/cards/${id}/likes`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: this._headers,
     });
     return this._getResponse(res);
@@ -90,10 +88,10 @@ export default class Api {
 }
 
 const apiConfig = {
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-58",
+  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-58',
   headers: {
-    authorization: "bc878a11-0bea-4fbc-ba4a-3af30d25199d",
-    "Content-Type": "application/json",
+    authorization: 'bc878a11-0bea-4fbc-ba4a-3af30d25199d',
+    'Content-Type': 'application/json',
   },
 };
 
