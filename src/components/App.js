@@ -20,6 +20,7 @@ function App() {
   const [isConfirmationPopupOpen, setIsConfirmationPopup] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [selectedCardToDelete, setSelectedCardToDelete] = useState({});
+  const [isLoader, setIsLoader] = useState(true);
 
   const getUserInfo = async () => {
     try {
@@ -45,26 +46,28 @@ function App() {
   }, []);
 
   const handleCardLike = async (card) => {
-    try {
-      // Снова проверяем, есть ли уже лайк на этой карточке
-      const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-      // Отправляем запрос в API и получаем обновлённые данные карточки
-      if (!isLiked) {
-        api.likeCard(card._id, !isLiked).then((newCard) => {
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    if (!isLiked) {
+      api
+        .likeCard(card._id, !isLiked)
+        .then((newCard) => {
           setCards((state) =>
             state.map((c) => (c._id === card._id ? newCard : c))
           );
-        });
-      } else {
-        api.dislikeCard(card._id, !isLiked).then((newCard) => {
+        })
+        .catch((error) => console.log(error));
+    } else {
+      api
+        .dislikeCard(card._id, !isLiked)
+        .then((newCard) => {
           setCards((state) =>
             state.map((c) => (c._id === card._id ? newCard : c))
           );
-        });
-      }
-    } catch (error) {
-      console.log(error);
+        })
+        .catch((error) => console.log(error));
     }
   };
 
@@ -75,6 +78,8 @@ function App() {
       handleCloseAllPopups();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoader(true);
     }
   };
 
@@ -85,6 +90,8 @@ function App() {
       handleCloseAllPopups();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoader(true);
     }
   };
 
@@ -95,6 +102,8 @@ function App() {
       handleCloseAllPopups();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoader(true);
     }
   };
 
@@ -105,6 +114,8 @@ function App() {
       handleCloseAllPopups();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoader(true);
     }
   };
 
@@ -138,6 +149,10 @@ function App() {
     setIsConfirmationPopup(false);
   };
 
+  const handleLoading = () => {
+    setIsLoader(false);
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -158,16 +173,22 @@ function App() {
           isOpen={isAddPlacePopupOpen}
           onClose={handleCloseAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          onLoading={handleLoading}
+          isLoader={isLoader}
         />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={handleCloseAllPopups}
           onUpdateUser={handleUpdateUser}
+          isLoader={isLoader}
+          onLoading={handleLoading}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={handleCloseAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoader={isLoader}
+          onLoading={handleLoading}
         />
         <ImagePopup
           isOpen={isImagePopupOpen}
@@ -179,6 +200,8 @@ function App() {
           onClose={handleCloseAllPopups}
           onCardDelete={handleCardDelete}
           card={selectedCardToDelete}
+          isLoader={isLoader}
+          onLoading={handleLoading}
         />
       </div>
     </CurrentUserContext.Provider>
