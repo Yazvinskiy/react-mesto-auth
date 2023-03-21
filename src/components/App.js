@@ -72,9 +72,9 @@ function App() {
     if (localStorage.getItem('token')) {
       const jwt = localStorage.getItem('token');
       checkToken(jwt).then((res) => {
-        setLoggedIn(true);
         setUserEmail(res.data.email);
-          navigate('/'); 
+        setLoggedIn(true);
+          navigate("/"); 
       })
       .catch((err) => console.log(err))
     }
