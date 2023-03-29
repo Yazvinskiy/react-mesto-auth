@@ -1,46 +1,73 @@
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-const Register = ({ onSubmit }) => {
-  const [formValue, setFormValue] = React.useState({
-    email: '',
-    password: '',
+const Register = ({ onSubmit, onLoading }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { email, password } = formValue;
-    onSubmit({ email, password });
+  const handleValueSubmit = (data) => {
+    onLoading();
+    onSubmit(data);
+    reset()
   };
 
   return (
     <div className="popup__container-auth">
       <h2 className="popup__title-auth">Регистрация</h2>
-      <form onSubmit={handleSubmit} className="popup__form">
+      <form onSubmit={handleSubmit(handleValueSubmit)} className="popup__form">
         <input
           className="popup__input-auth"
           name="email"
-          value={formValue.email}
-          onChange={handleChange}
           placeholder="Email"
+          type="email"
+          {...register('email', {
+            required: {
+              value: true,
+              message: 'Введите email',
+            },
+            minLength: {
+              value: 6,
+              message: 'Минимальная длинна логина - 6 символа',
+            },
+            maxLength: {
+              value: 30,
+              message: 'Максимальное число символов 40',
+            },
+          })}
         />
+        <p className="placelink-input-error popup__error">
+          {errors.email && errors.email.message}
+        </p>
         <input
           className="popup__input-auth"
           name="password"
-          value={formValue.password}
-          onChange={handleChange}
           placeholder="Пароль"
+          {...register('password', {
+            required: {
+              value: true,
+              message: 'Введите пароль',
+            },
+            minLength: {
+              value: 8,
+              message: 'Минимальная длинна пароля - 8 символа',
+            },
+            maxLength: {
+              value: 30,
+              message: 'Максимальное число символов 30',
+            },
+          })}
         />
-        <button type="submit" className=" popup__btn-auth">
+        <p className="placelink-input-error popup__error">
+          {errors.password && errors.password.message}
+        </p>
+        <button type="submit" className=" popup__btn-auth" disabled={!isValid}>
           Зарегистрироваться
         </button>
       </form>

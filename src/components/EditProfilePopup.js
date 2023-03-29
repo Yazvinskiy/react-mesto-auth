@@ -1,36 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useForm } from 'react-hook-form';
 import PopupWithForm from './PopupWithForm';
 
 function EditProfilePopup(props) {
   const { isOpen, onClose, onUpdateUser, isLoader, onLoading } = props;
-
   const currentUser = React.useContext(CurrentUserContext);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
+  });
 
   React.useEffect(() => {
-    setName(currentUser.name ?? '');
-    setDescription(currentUser.about ?? '');
+    setValue('name', currentUser.name ?? '');
+    setValue('description', currentUser.about ?? '');
   }, [currentUser, isOpen]);
 
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeDescription(e) {
-    setDescription(e.target.value);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
+  function onSubmit(data) {
     onLoading();
-
-    onUpdateUser({
-      name,
-      about: description,
-    });
+    onUpdateUser(data);
   }
 
   return (
@@ -40,34 +32,54 @@ function EditProfilePopup(props) {
       submitBtnText={isLoader ? 'Сохранить' : 'Сохранить...'}
       isOpen={isOpen}
       onClose={onClose}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
+      disabled={!isValid}
     >
       <input
-        value={name}
-        onChange={handleChangeName}
-        id="username-input"
-        required
-        name="name"
+        {...register('name', {
+          required: {
+            value: true,
+            message: 'Заполните это поле',
+          },
+          minLength: {
+            value: 2,
+            message: 'Минимальная длинна логина - 3 символа',
+          },
+          maxLength: {
+            value: 30,
+            message: 'Максимальное число символов 30',
+          },
+        })}
         type="text"
-        minLength={2}
-        maxLength={40}
         placeholder="Имя"
         className="popup__input popup__input_user_name"
       />
-      <span className="username-input-error popup__error" />
+      <p className="placelink-input-error popup__error">
+        {errors.name && errors.name.message}
+      </p>
+
       <input
-        value={description}
-        onChange={handleChangeDescription}
-        id="userprofession-input"
-        required
-        name="about"
+        {...register('description', {
+          required: {
+            value: true,
+            message: 'Заполните это поле',
+          },
+          minLength: {
+            value: 3,
+            message: 'Минимальная длинна логина - 3 символа',
+          },
+          maxLength: {
+            value: 30,
+            message: 'Максимальное число символов 30',
+          },
+        })}
         type="text"
-        minLength={2}
-        maxLength={200}
         placeholder="Вид деятельности"
         className="popup__input popup__input_user_profession"
       />
-      <span className="userprofession-input-error popup__error" />
+      <p className="placelink-input-error popup__error">
+        {errors.description && errors.description.message}
+      </p>
     </PopupWithForm>
   );
 }

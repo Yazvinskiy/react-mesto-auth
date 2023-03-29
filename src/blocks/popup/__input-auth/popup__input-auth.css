@@ -3,7 +3,7 @@
     border-bottom: 2px solid #CCCCCC;
     width: 100%;
     background-color: black;  
-    margin-bottom: 57px;
+    margin-bottom: 27px;
     box-sizing: border-box;
     color: white;
     font-weight: 400;
@@ -13,9 +13,6 @@
     
 }
 
- :last-of-type {
-    margin-bottom: 0;
-}
 
 .popup__input-auth:focus {
     outline:none;

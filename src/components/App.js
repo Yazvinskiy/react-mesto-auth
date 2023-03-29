@@ -9,6 +9,7 @@ import AddPlacePopup from './AddPlacePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import ImagePopup from './ImagePopup';
+import NotFound from './NotFound';
 import ConfirmationPopup from './ConfirmationPopup';
 import { api } from '../utils/api';
 import { checkToken, authorize, register } from '../utils/auth';
@@ -223,6 +224,7 @@ function App() {
             loggedIn={loggedIn}
           />
           <Routes>
+          <Route path="*" element={<NotFound />} />
             <Route
               path="/"
               element={
@@ -241,11 +243,11 @@ function App() {
             />
             <Route
               path="/sign-up"
-              element={<Register onSubmit={handleSingUp} />}
+              element={<Register onSubmit={handleSingUp} onLoading={handleLoading}/>}
             />
             <Route
               path="/sign-in"
-              element={<Login onSubmit={handleSingIn} />}
+              element={<Login onSubmit={handleSingIn} onLoading={handleLoading}/>}
             />
           </Routes>
           <Footer />

@@ -20,13 +20,13 @@ export default class Api {
     return this._getResponse(res);
   }
 
-  async createCard(data) {
+  async createCard({cardName, cardLink}) {
     const res = await fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
-        name: data.name,
-        link: data.link,
+       name: cardName,
+       link: cardLink
       }),
     });
     return this._getResponse(res);
@@ -49,13 +49,13 @@ export default class Api {
     return this._getResponse(res);
   }
 
-  async setUserData(data) {
+  async setUserData({name, description}) {
     const res = await fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
-        name: data.name,
-        about: data.about,
+        name,
+        about: description,
       }),
     });
     return this._getResponse(res);
@@ -65,7 +65,7 @@ export default class Api {
     const res = await fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._headers,
-      body: JSON.stringify(data),
+      body: JSON.stringify({avatar: data.linkAvatar}),
     });
     return this._getResponse(res);
   }

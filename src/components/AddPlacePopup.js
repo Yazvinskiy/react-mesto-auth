@@ -1,33 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
+import { useForm } from 'react-hook-form';
 
 function AddPlacePopup(props) {
-  const { isOpen, onClose, onAddPlace, isLoader, onLoading } = props;
-  const [cardName, setCardName] = useState('');
-  const [cardLink, setCardLink] = useState('');
+  const {
+    isOpen,
+    onClose,
+    onAddPlace,
+    isLoader,
+    onLoading,
+  } = props;
 
-  function handleChangeName(e) {
-    setCardName(e.target.value);
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
+  });
 
-  function handleChangeLink(e) {
-    setCardLink(e.target.value);
-  }
-  function handleSubmit(e) {
-    e.preventDefault();
-    
+  
+  const onSubmit = (data) => {
     onLoading();
-
-    onAddPlace({
-      name: cardName,
-      link: cardLink,
-    });
-  }
+    onAddPlace(data);
+  };
 
   useEffect(() => {
-    setCardName('');
-    setCardLink('');
+    reset();
   }, [isOpen]);
+ 
 
   return (
     <PopupWithForm
@@ -36,34 +38,49 @@ function AddPlacePopup(props) {
       submitBtnText={isLoader ? 'Создать' : 'Создать...'}
       isOpen={isOpen}
       onClose={onClose}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       isLoader={isLoader}
+      disabled={!isValid}
     >
       <input
-        value={cardName}
-        onChange={handleChangeName}
-        id="placename-input"
-        required
-        name="name"
-        type="text"
-        minLength={2}
-        maxLength={30}
+        {...register('cardName', {
+          required: {
+            value: true,
+            message: 'Введите логин',
+          },
+          minLength: {
+            value: 3,
+            message: 'Минимальная длинна логина - 3 символа',
+          },
+          maxLength: {
+            value: 30,
+            message: 'Максимальное число символов 30',
+          },
+        })}
         placeholder="Название"
         className="popup__input popup__input_card_title"
       />
-      <span className="placename-input-error popup__error" />
+      <p className="placelink-input-error popup__error">
+        {errors.cardName && errors.cardName.message}
+      </p>
+
       <input
-        value={cardLink}
-        onChange={handleChangeLink}
-        id="placelink-input"
-        required
-        name="link"
+        {...register('cardLink', {
+          required: {
+            value: true,
+            message: 'Введите ссылку на изображения',
+          },  
+        })}
         type="url"
         placeholder="Ссылка на картинку"
         className="popup__input popup__input_card_link"
       />
-      <span className="placelink-input-error popup__error" />
+      <p className="placelink-input-error popup__error">
+        {errors.cardLink && errors.cardLink.message}
+      </p>
     </PopupWithForm>
   );
 }
 export default AddPlacePopup;
+
+
